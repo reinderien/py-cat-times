@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from operator import concat
 from sys import version, version_info
 from timeit import timeit  # Compatibility: ver >= 2.6
 
@@ -11,6 +12,7 @@ if version_info[0] == 2:
     from StringIO import StringIO
 else:
     from io import StringIO
+    from functools import reduce
     xrange = range
 
 
@@ -39,8 +41,13 @@ def build_stringio():
     return output.getvalue()
 
 
+def build_reduce():
+    return reduce(concat, ('a' for _ in xrange(input_len)))
+
+
 builds = {'plus': build_plus,
           'join': build_join,
+          'reduce': build_reduce,
           'bytes_plus': build_bytes_plus,
           'stringio': build_stringio}
 
