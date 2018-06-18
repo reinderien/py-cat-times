@@ -49,16 +49,18 @@ xaxis_text_vert = function() {
 
 # Plotting #################################################################
 
+# Adapt this for non-Mac
+machine = system('sysctl -n machdep.cpu.brand_string', intern=TRUE)
+
 do_graph = function(gc_en, gc_title) {
     to_graph = times[times$GC == gc_en,]
-    cross = 3
     ggplot(to_graph, aes(x=Size, y=Throughput, colour=Method)) +
         facet_grid(.~Version) +
-        geom_line() + geom_point(shape=cross) +
+        geom_smooth(level=0.99, span=0.4, aes(fill=Method), size=0.5) +
         xaxis_text_vert() + scale_x_log_eng() +
+        theme(panel.grid.minor = element_line(size=0.1)) +
         labs(title=sprintf('String append across Python versions (GC %s)', gc_title),
-             # Adapt this for non-Mac
-             subtitle=system('sysctl -n machdep.cpu.brand_string', intern=TRUE),
+             subtitle=machine, caption=expression(gamma = 0.99),
              x='Input size (bytes)', y='Throughput (bytes/s)')
 }
 

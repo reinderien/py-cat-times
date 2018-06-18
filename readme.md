@@ -26,6 +26,19 @@ To generate `Rplots.pdf` from `times.csv`:
 
     ./graphs
 
+## Interpretation
+
+The graphs in `Rplots.pdf` are over the following variables:
+
+- `GC`, logical, independent, over pages: Whether or not garbage collection is enabled during 
+  `timeit`
+- `Version`, factor, independent, over groups: Python version used
+- `Method`, factor, independent, over colours: Concatenation mechanism used
+- `Size`, integer, independent, over logarithmic x-axis: Number of bytes to concatenate 
+- `Throughput`, numeric, dependent, over y-axis: Number of bytes concatenated per second. This is
+  aggregated using Loess smoothing, showing confidence to γ=0.99. 
+
+
 ## Results (concatenation)
 
 - `StringIO` is very slow for Python 2.x through 3.0, but is greatly improved in 3.3+
@@ -41,10 +54,5 @@ To generate `Rplots.pdf` from `times.csv`:
 - Telling `timeit` to enable garbage collection doesn't have very much impact on measured 
   performance.
 
-## Future work
-
 This is not an attempt to deter people from using 3.x. I would love critique on my methods and
 findings.
-
-- Should I, instead of believing `timeit` at face value, record repeated results and graph box 
-  plots? (or take the minimum time elapsed?)
