@@ -9,6 +9,8 @@ versions=$(pyenv versions | \
            sed -nE 's_^[[:space:]]*\*?[[:space:]]*([^[:space:]]+).*_\1_p')
 
 for ver in $versions; do
-    export PYENV_VERSION=$ver
-    ./trial
+    if [ "$ver" != "system" ]; then
+        export PYENV_VERSION=$ver
+        ./trial
+    fi
 done
