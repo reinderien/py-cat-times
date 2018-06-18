@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+
+from sys import version_info
+ver = '.'.join(str(v) for v in version_info[:3])
+
+resfile = open('times.csv', 'a')
+resfile.write('%s\n' % ver)

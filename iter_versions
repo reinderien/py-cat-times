@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Clear out results file
+echo -n >times.csv
+
 # Set PYENV_VERSION to each value from `pyenv versions` then use Python
 # Rely on BSD sed, for the loss
 versions=$(pyenv versions | \
@@ -7,5 +10,5 @@ versions=$(pyenv versions | \
 
 for ver in $versions; do
     export PYENV_VERSION=$ver
-    python --version
+    ./trial
 done
