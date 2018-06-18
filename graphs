@@ -1,0 +1,55 @@
+#!/usr/bin/env R --vanilla -q -f
+options(echo=F)
+
+library(ggplot2)
+library(scales)
+
+
+# Data #####################################################################
+
+times = read.csv('times.csv')
+
+
+# Plot utilities ###########################################################
+# Lifted directly from
+# https://github.com/reinderien/capmeter/blob/master/range-analysis.r
+
+# Adapted from https://stackoverflow.com/questions/30179442
+log_breaks = function(maj, radix=10) {
+  function(x) {
+    minx = floor(min(logb(x, radix), na.rm=T)) - 1
+    maxx = ceiling(max(logb(x, radix), na.rm=T)) + 1
+    n_major = maxx - minx + 1
+    major_breaks = minx:maxx
+    if (maj) {
+      breaks = major_breaks
+    } else {
+      breaks = rep(logb(1:(radix-1), radix), times=n_major) +
+               rep(major_breaks, each=radix-1)
+    }
+    radix^breaks
+  }
+}
+# See https://github.com/tidyverse/ggplot2/blob/master/R/scale-continuous.r#L160
+scale_x_log_eng = function(..., radix=10) {
+  scale_x_continuous(..., trans=log_trans(radix),
+                     breaks=log_breaks(T, radix),
+                     minor_breaks=log_breaks(F, radix))
+}
+scale_y_log_eng = function(..., radix=10) {
+  scale_y_continuous(..., trans=log_trans(radix),
+                     breaks=log_breaks(T, radix),
+                     minor_breaks=log_breaks(F, radix))
+}
+xaxis_text_vert = function() {
+  theme(axis.text.x=element_text(angle=90))
+}
+
+
+# Plotting #################################################################
+
+ggplot(times, aes(x=Size, y=Duration)) +
+    ggtitle('String append time for various methods and Python versions') +
+    geom_point(aes(colour=Version, shape=Method)) +
+    scale_x_log_eng() + scale_y_log_eng() +
+    scale_shape(solid=FALSE)
