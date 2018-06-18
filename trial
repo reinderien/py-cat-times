@@ -1,7 +1,32 @@
 #!/usr/bin/env python
 
-from sys import version
-ver = version.partition('\n')[0]
+from sys import version, version_info
+ver = version.partition('\n')[0].rstrip()
+print(ver)
+
+# Compatibility: ver >= 2.6
+from timeit import timeit
+
+if version_info[0] < 3:
+    def build_plus():
+        output = ''
+        for i in xrange(input_len):
+            output += 'a'
+        return output
+else:
+    def build_plus():
+        output = ''
+        for i in range(input_len):
+            output += 'a'
+        return output
+
+builds = {'plus': build_plus}
 
 resfile = open('times.csv', 'a')
-resfile.write('%s\n' % ver)
+
+for build_name, build_fun in builds.items():
+    for input_len_exp in range(1, 5):
+        input_len = 10**input_len_exp
+        reps = 10**(6 - input_len_exp)
+        dur = timeit(build_fun, number=reps)/reps
+        resfile.write('%s,%s,%d,%.3g\n' % (ver, build_name, input_len, dur))
