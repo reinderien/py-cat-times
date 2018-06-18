@@ -7,26 +7,37 @@ print(ver)
 # Compatibility: ver >= 2.6
 from timeit import timeit
 
-if version_info[0] < 3:
-    def build_plus():
-        output = ''
-        for i in xrange(input_len):
-            output += 'a'
-        return output
-else:
-    def build_plus():
-        output = ''
-        for i in range(input_len):
-            output += 'a'
-        return output
+if version_info[0] >= 3:
+    xrange = range
 
-builds = {'plus': build_plus}
+
+def build_plus():
+    output = ''
+    for _ in xrange(input_len):
+        output += 'a'
+    return output
+
+
+def build_join():
+    return ''.join('a' for _ in xrange(input_len))
+
+
+def build_bytes_plus():
+    output = b''
+    for _ in xrange(input_len):
+        output += b'a'
+    return output
+
+
+builds = {'plus': build_plus,
+          'join': build_join,
+          'bytes_plus': build_bytes_plus}
 
 resfile = open('times.csv', 'a')
 
 for build_name, build_fun in builds.items():
     for input_len_exp in range(1, 5):
         input_len = 10**input_len_exp
-        reps = 10**(6 - input_len_exp)
+        reps = 10**(5 - input_len_exp)
         dur = timeit(build_fun, number=reps)/reps
         resfile.write('%s,%s,%d,%.3g\n' % (ver, build_name, input_len, dur))
