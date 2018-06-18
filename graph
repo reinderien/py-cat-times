@@ -1,0 +1,4 @@
+#!/usr/bin/env R --vanilla -q -f
+options(echo=F)
+
+library(ggplot2)
