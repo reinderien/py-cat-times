@@ -36,7 +36,7 @@ The graphs in `Rplots.pdf` are over the following variables:
 - `Method`, factor, independent, over colours: Concatenation mechanism used
 - `Size`, integer, independent, over logarithmic x-axis: Number of bytes to concatenate 
 - `Throughput`, numeric, dependent, over y-axis: Number of bytes concatenated per second. This is
-  aggregated using Loess smoothing, showing confidence to γ=0.99. 
+  aggregated using Loess smoothing, showing confidence to γ=0.95. 
 
 
 ## Results (concatenation)
