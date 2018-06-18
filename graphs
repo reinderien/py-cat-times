@@ -60,7 +60,7 @@ do_graph = function(gc_en, gc_title) {
         xaxis_text_vert() + scale_x_log_eng() +
         theme(panel.grid.minor = element_line(size=0.1)) +
         labs(title=sprintf('String append across Python versions (GC %s)', gc_title),
-             subtitle=machine, caption=expression(gamma = 0.99),
+             subtitle=machine, caption=expression(gamma == 0.99),
              x='Input size (bytes)', y='Throughput (bytes/s)')
 }
 
