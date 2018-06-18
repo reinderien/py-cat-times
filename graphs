@@ -9,7 +9,6 @@ library(scales)
 
 times = read.csv('times.csv')
 times$Throughput = with(times, Size/Duration)
-times$VersionSize = with(times, interaction(Version, Size))
 
 
 # Plot utilities ###########################################################
@@ -50,14 +49,13 @@ xaxis_text_vert = function() {
 
 # Plotting #################################################################
 
-by_method = function(...) {
-    ggplot(...) +
-        geom_point(aes(colour=Method, shape=Method)) +
-        scale_shape(solid=FALSE) + xaxis_text_vert()
-}
-
-by_method(times, aes(x=VersionSize, y=Duration)) + scale_y_log_eng() +
-    ggtitle('String append time across methods and Python versions')
-
-by_method(times, aes(x=VersionSize, y=Throughput)) +
-    ggtitle('String append throughput across methods and Python versions')
+cross = 3
+ggplot(times, aes(x=Size, y=Throughput, colour=Method)) +
+    facet_grid(.~Version) +
+    geom_line() + geom_point(shape=cross) +
+    xaxis_text_vert() + scale_x_log_eng() +
+    labs(title='String append across Python versions',
+         # Adapt this for non-Mac
+         subtitle=system('sysctl -n machdep.cpu.brand_string', intern=TRUE),
+         x='Input size (bytes)',
+         y='Throughput (bytes/s)')
