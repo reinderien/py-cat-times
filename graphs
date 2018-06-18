@@ -8,6 +8,8 @@ library(scales)
 # Data #####################################################################
 
 times = read.csv('times.csv')
+times$Throughput = with(times, Size/Duration)
+times$VersionSize = with(times, interaction(Version, Size))
 
 
 # Plot utilities ###########################################################
@@ -48,8 +50,14 @@ xaxis_text_vert = function() {
 
 # Plotting #################################################################
 
-ggplot(times, aes(x=Size, y=Duration)) +
-    ggtitle('String append time for various methods and Python versions') +
-    geom_point(aes(colour=Version, shape=Method)) +
-    scale_x_log_eng() + scale_y_log_eng() +
-    scale_shape(solid=FALSE)
+by_method = function(...) {
+    ggplot(...) +
+        geom_point(aes(colour=Method, shape=Method)) +
+        scale_shape(solid=FALSE) + xaxis_text_vert()
+}
+
+by_method(times, aes(x=VersionSize, y=Duration)) + scale_y_log_eng() +
+    ggtitle('String append time across methods and Python versions')
+
+by_method(times, aes(x=VersionSize, y=Throughput)) +
+    ggtitle('String append throughput across methods and Python versions')
