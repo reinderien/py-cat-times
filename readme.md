@@ -18,11 +18,7 @@ Whatever platform you're on, you'll need:
 
 ## Usage
 
-To run through all of the methods for your current version of Python, generating `times.csv`:
-
-    ./trial
-
-To run `trial` through all of your installed pyenv versions
+To run `trial` through all of your installed pyenv versions, generating `times.csv`:
 
     ./iter_versions
 
@@ -42,6 +38,13 @@ To generate `Rplots.pdf` from `times.csv`:
 - Some methods (`join`, `StringIO`) have a fairly linear input complexity; that is, after some 
   initial cost they approximate O(n). Other methods (`reduce`, and `bytes+` in 3.x) scale very 
   poorly.
+- Telling `timeit` to enable garbage collection doesn't have very much impact on measured 
+  performance.
 
-This is not an attempt to deter people from using 3.x. I would love critique on my methods (gc?) 
-and findings.
+## Future work
+
+This is not an attempt to deter people from using 3.x. I would love critique on my methods and
+findings.
+
+- Should I, instead of believing `timeit` at face value, record repeated results and graph box 
+  plots? (or take the minimum time elapsed?)
