@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Set PYENV_VERSION to each value from `pyenv versions` then use Python
+# Rely on BSD sed, for the loss
+versions=$(pyenv versions | \
+           sed -nE 's_^[[:space:]]*\*?[[:space:]]*([^[:space:]]+).*_\1_p')
+
+for ver in $versions; do
+    export PYENV_VERSION=$ver
+    python --version
+done
