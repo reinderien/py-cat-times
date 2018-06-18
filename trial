@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
 from sys import version, version_info
+from timeit import timeit  # Compatibility: ver >= 2.6
+
 # ver = version.partition('\n')[0].rstrip()
 ver = '.'.join(str(v) for v in version_info[:3])
 print(ver)
 
-# Compatibility: ver >= 2.6
-from timeit import timeit
-
-if version_info[0] >= 3:
+if version_info[0] == 2:
+    from StringIO import StringIO
+else:
+    from io import StringIO
     xrange = range
 
 
@@ -30,9 +32,38 @@ def build_bytes_plus():
     return output
 
 
+def build_stringio():
+    output = StringIO()
+    for _ in xrange(input_len):
+        output.write('a')
+    return output.getvalue()
+
+
 builds = {'plus': build_plus,
           'join': build_join,
-          'bytes_plus': build_bytes_plus}
+          'bytes_plus': build_bytes_plus,
+          'stringio': build_stringio}
+
+if version_info[0] == 2:
+    import cStringIO
+
+    def build_cstringio():
+        output = cStringIO.StringIO()
+        for _ in xrange(input_len):
+            output.write('a')
+        return output.getvalue()
+
+    builds['cstringio'] = build_cstringio
+else:
+    from io import BytesIO
+
+    def build_bytesio():
+        output = BytesIO()
+        for _ in xrange(input_len):
+            output.write(b'a')
+        return output.getvalue()
+
+    builds['bytesio'] = build_bytesio
 
 resfile = open('times.csv', 'a')
 max_order = 6
