@@ -30,9 +30,9 @@ To generate `Rplots.pdf` from `times.csv`:
 
 The graphs in `Rplots.pdf` are over the following variables:
 
-- `GC`, logical, independent, over pages: Whether or not garbage collection is enabled during 
-  `timeit`
-- `Version`, factor, independent, over groups: Python version used
+- `GC`, logical, independent, over the grid rows: Whether or not garbage collection is enabled 
+  during `timeit`
+- `Version`, factor, independent, over the grid columns: Python version used
 - `Method`, factor, independent, over colours: Concatenation mechanism used
 - `Size`, integer, independent, over logarithmic x-axis: Number of bytes to concatenate 
 - `Throughput`, numeric, dependent, over y-axis: Number of bytes concatenated per second. This is
