@@ -55,12 +55,16 @@ machine = system('sysctl -n machdep.cpu.brand_string', intern=TRUE)
 label_map = setNames(c('GC disabled', 'GC enabled'), c('FALSE', 'TRUE'))
 label_gc = function(strings) label_map[strings]
 
-ggplot(times, aes(x=Size, y=Throughput, colour=Method)) +
-    facet_grid(GC~Version,
-               labeller=labeller(GC=label_gc)) +
-    geom_smooth(level=0.95, span=0.8, aes(fill=Method), size=0.5) +
-    xaxis_text_vert() + scale_x_log_eng() +
-    theme(panel.grid.minor = element_line(size=0.1)) +
-    labs(title='String append across Python versions',
-         subtitle=machine, caption=expression(gamma == 0.95),
-         x='Input size (bytes)', y='Throughput (bytes/s)')
+do_graph = function(title, facet_expr, fill_var) {
+    ggplot(times, aes_string(x='Size', y='Throughput', colour=fill_var)) +
+        facet_grid(facet_expr, labeller=labeller(GC=label_gc)) +
+        geom_smooth(level=0.95, span=0.8, aes_string(fill=fill_var), size=0.5) +
+        xaxis_text_vert() + scale_x_log_eng() +
+        theme(panel.grid.minor = element_line(size=0.1)) +
+        labs(title=sprintf('String append across %s', title),
+             subtitle=machine, caption=expression(gamma == 0.95),
+             x='Input size (bytes)', y='Throughput (bytes/s)')
+}
+
+do_graph('Python versions', GC~Version, 'Method')
+do_graph('methods', GC~Method, 'Version')
