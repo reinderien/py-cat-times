@@ -28,14 +28,8 @@ To generate `Rplots.pdf` from `times.csv`:
 
 If all goes as expected, the PDF will look like:
 
-<object type="application/pdf" data="https://raw.githubusercontent.com/reinderien/py-cat-times/master/Rplots.pdf">
-  <embed src="https://raw.githubusercontent.com/reinderien/py-cat-times/master/Rplots.pdf">
-    This browser does not support PDFs. Please
-    <a href="https://raw.githubusercontent.com/reinderien/py-cat-times/master/Rplots.pdf">
-      download Rplots.pdf
-    </a> to view it.
-  </embed>
-</object>
+<embed src="https://drive.google.com/viewerng/viewer?embedded=true&url=https://raw.githubusercontent.com/reinderien/py-cat-times/master/Rplots.pdf" />
+
 
 ## Interpretation
 
