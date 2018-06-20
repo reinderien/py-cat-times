@@ -28,16 +28,26 @@ To generate `Rplots.pdf` from `times.csv`:
 
 ## Interpretation
 
-The graphs in `Rplots.pdf` are over the following variables:
+The first two graphs in `Rplots.pdf` show throughput over the following variables:
 
 - `GC`, logical, independent, over the grid rows: Whether or not garbage collection is enabled 
   during `timeit`
-- `Version`, factor, independent, over the grid columns: Python version used
-- `Method`, factor, independent, over colours: Concatenation mechanism used
+- `Version`, factor, independent: Python version used
+- `Method`, factor, independent: Concatenation mechanism used
 - `Size`, integer, independent, over logarithmic x-axis: Number of bytes to concatenate 
 - `Throughput`, numeric, dependent, over y-axis: Number of bytes concatenated per second. This is
   aggregated using Loess smoothing, showing confidence to γ=0.95. 
 
+The third graph shows normalized time to illustrate time complexity. Two reference curves for O(n) 
+and O(n²) are shown for comparison to the actual times. This graph is shown over the following 
+variables:
+
+- `MajorVersion`, factor, independent: Whether the time came from Python 2.x or 3.x
+- `Method`, factor, independent: Concatenation mechanism used (plus two references not from 
+  timing data)
+- `Size`, integer, independent, over logarithmic x-axis: Number of bytes to concatenate 
+- `NormalDuration`, numeric, dependent, over logarithmic y-axis: The concatenation duration, 
+  normalized so that all curves approximately run through the point (50kB, 1s).
 
 ## Results (concatenation)
 
@@ -48,9 +58,9 @@ The graphs in `Rplots.pdf` are over the following variables:
 - New versions of Python are not guaranteed to speed up memory operations. Unfortunately, the 
   opposite is often true. Simple string concatenation is far slower in 3.3+ than 2.x. 
   Concatenation of `bytes` has been particularly worsened in 3.x.
-- Some methods (`join`, `StringIO`) have a fairly linear input complexity; that is, after some 
-  initial cost they approximate O(n). Other methods (`reduce`, and `bytes+` in 3.x) scale very 
-  poorly.
+- Most methods have a fairly linear input complexity; that is, after some initial cost they
+  approximate O(n). Other methods (`reduce`, and `bytes+` in 3.x) begin roughly linear, but 
+  after an input size of about 10kB they scale quite poorly at about O(n²).
 - Telling `timeit` to enable garbage collection doesn't have very much impact on measured 
   performance.
 
