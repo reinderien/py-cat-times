@@ -123,7 +123,7 @@ ggplot() +
     geom_smooth_times(FALSE, aes(x=Size, y=NormalDuration, colour=Method, linetype=MajorVersion),
                       size=0.5) +
     scale_x_log_eng() + xaxis_text_vert() +
-    scale_y_log_eng() +
+    scale_y_log_eng(limits=c(1e-5, 10)) +
     scale_colour_cb() +
     theme(panel.grid.minor = element_line(size=0.1)) +
     labs(title='String append time complexity',
