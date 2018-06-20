@@ -14,7 +14,7 @@ setup_times = function(fname) {
 }
 
 setup_normals = function(times) {
-    # Pick input size closest to 500
+    # Pick input size closest to 50kB
     normal_size = times[min(abs(times$Size - 5e4)),]$Size
 
     # For a given major version and method, at normal_size, find the median duration
