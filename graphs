@@ -7,19 +7,42 @@ library(scales)
 
 # Data #####################################################################
 
-times = transform(read.csv('times.csv'),
-                  Throughput=Size/Duration,
-                  MajorVersion=factor(substr(Version, 0, 1)))
+setup_times = function(fname) {
+    transform(read.csv(fname),
+              Throughput=Size/Duration,
+              MajorVersion=factor(substr(Version, 0, 1)))
+}
 
-# Pick input size closest to 500
-normal_size = times[min(abs(times$Size - 500)),]$Size
+setup_normals = function(times) {
+    # Pick input size closest to 500
+    normal_size = times[min(abs(times$Size - 5e4)),]$Size
 
-# For a given major version and method, at normal_size, find the median duration
-meds = aggregate(Duration ~ MajorVersion+Method, FUN=median,
-                  data=times[times$Size==normal_size,])
-colnames(meds)[3] = 'BaseDuration'
-times = merge(times, meds)
-times$NormalDuration = with(times, Duration/BaseDuration)
+    # For a given major version and method, at normal_size, find the median duration
+    meds = aggregate(Duration ~ MajorVersion+Method, FUN=median,
+                      data=times[times$Size==normal_size,])
+    colnames(meds)[3] = 'BaseDuration'
+    times_with_normals = transform(merge(times, meds),
+                                   NormalDuration = Duration/BaseDuration,
+                                   Ideal=FALSE)
+
+    # Add two guide curves for O(n) and O(n²)
+    guide_template = data.frame(Size=unique(times$Size), Ideal=TRUE)
+    guide_template[,c('Version', 'MajorVersion', 'GC', 'Duration',
+                      'BaseDuration', 'Throughput')] = NA
+
+    on_guide = cbind(guide_template)
+    on2_guide = cbind(guide_template)
+    on_guide[,'Method'] = '[Ideal O(n)]'
+    on2_guide[,'Method'] = '[Ideal O(n²)]'
+    on_guide[,'NormalDuration'] = on_guide$Size/normal_size
+    on2_guide[,'NormalDuration'] = (on2_guide$Size/normal_size)^2
+
+    rbind(times_with_normals, on_guide, on2_guide)
+}
+
+times = setup_times('times.csv')
+times_with_normals = setup_normals(times)
+
 
 # Plot utilities ###########################################################
 # Lifted directly from
@@ -55,6 +78,11 @@ scale_y_log_eng = function(..., radix=10) {
 xaxis_text_vert = function() {
   theme(axis.text.x=element_text(angle=90))
 }
+scale_colour_cb = function() {
+    # http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
+    scale_colour_manual(values=c('#000000', '#999999', '#E69F00', '#56B4E9', '#009E73',
+                                 '#F0E442', '#0072B2', '#D55E00', '#CC79A7'))
+}
 
 
 # Plotting #################################################################
@@ -79,13 +107,24 @@ throughput_plot = function(title, facet_expr, fill_var) {
 throughput_plot('Python versions', GC~Version, 'Method')
 throughput_plot('methods', GC~Method, 'Version')
 
+
 # For the next plot, ignore GC and minor version. This leaves method, major version and input
 # size as independent, and normalized duration as dependent.
 
-ggplot(times, aes(x=Size, y=NormalDuration, colour=Method, linetype=MajorVersion)) +
-    geom_smooth(se=FALSE, span=0.2, aes(fill=Method), size=0.5) +
+
+geom_smooth_times = function(is_ideal, ...) {
+    geom_smooth(data=times_with_normals[times_with_normals$Ideal == is_ideal,],
+                se=FALSE, span=0.2, ...)
+}
+
+
+ggplot() +
+    geom_smooth_times(TRUE, aes(x=Size, y=NormalDuration, colour=Method)) +
+    geom_smooth_times(FALSE, aes(x=Size, y=NormalDuration, colour=Method, linetype=MajorVersion),
+                      size=0.5) +
     scale_x_log_eng() + xaxis_text_vert() +
     scale_y_log_eng() +
+    scale_colour_cb() +
     theme(panel.grid.minor = element_line(size=0.1)) +
     labs(title='String append time complexity',
          x='Input size (bytes)', y='Normalized time')
