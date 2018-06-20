@@ -47,7 +47,7 @@ variables:
   timing data)
 - `Size`, integer, independent, over logarithmic x-axis: Number of bytes to concatenate 
 - `NormalDuration`, numeric, dependent, over logarithmic y-axis: The concatenation duration, 
-  normalized so that all curves approximately run through the point (50kB, 1s).
+  normalized so that all curves approximately run through the point (50kB, 1).
 
 ## Results (concatenation)
 
