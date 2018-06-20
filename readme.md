@@ -26,9 +26,11 @@ To generate `Rplots.pdf` from `times.csv`:
 
     ./graphs
 
-If all goes as expected, the PDF will look like:
+If all goes as expected, the PDF will look like this:
 
-<embed src="https://drive.google.com/viewerng/viewer?embedded=true&url=https://raw.githubusercontent.com/reinderien/py-cat-times/master/Rplots.pdf" />
+<a href="https://raw.githubusercontent.com/reinderien/py-cat-times/master/Rplots.pdf">
+  Rplots (PDF)
+</a>
 
 
 ## Interpretation
